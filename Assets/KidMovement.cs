@@ -55,7 +55,6 @@ public class KidMovement : MonoBehaviour
     private void MovementOnInput()
     {
         float horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
-        print("horizontal " + horizontal);
         bool isJumping = CrossPlatformInputManager.GetButton("Jump");
         if (isJumping)
         {
@@ -64,7 +63,6 @@ public class KidMovement : MonoBehaviour
             rigidBody.AddRelativeForce(Vector3.up * jump);
             rigidBody.freezeRotation = false;
         }
-        print("jump " + isJumping);
         transform.localPosition = new Vector3(
             transform.localPosition.x + horizontal * horizontalModificator * Time.deltaTime,
             transform.localPosition.y,
@@ -75,26 +73,23 @@ public class KidMovement : MonoBehaviour
 
     private void Animate(float horizontal, bool isJumping)
     {
-        bool isFalling = transform.localPosition.y > -3.3 && CrossPlatformInputManager.GetButtonUp("Jump") == true;
+        bool isFalling = transform.localPosition.y > -3.2 && CrossPlatformInputManager.GetButton("Jump") == false;
         bool isWalking = Mathf.Abs(horizontal) > Mathf.Epsilon && !isFalling;
 
         if (isJumping)
         {
-            print("animate jump up");
             animator.Play("kid jump up");
             animator.speed = 1;
             playing = Animations.Jump;
         }
         else if (isFalling)
         {
-            print("animate jump down");
             animator.Play("kid jump down");
             animator.speed = 1;
             playing = Animations.Fall;
         }
         else if (isWalking)
         {
-            print("animate walk");
             animator.Play("kid walk");
             animator.speed = 1;
             playing = Animations.Run;
@@ -104,7 +99,6 @@ public class KidMovement : MonoBehaviour
             bool shouldBlink = Mathf.CeilToInt(Time.realtimeSinceStartup) % blinkPause == 0;
             if (shouldBlink)
             {
-                print("animate blink");
                 animator.Play("kid idle");
                 animator.speed = 1;
                 playing = Animations.Blink;
@@ -116,7 +110,8 @@ public class KidMovement : MonoBehaviour
             }
             else //stop immediately
             {
-                print("freeze");
+                animator.Play("kid idle");
+                playing = Animations.None;
                 animator.speed = 0;
             }
         }
@@ -124,7 +119,6 @@ public class KidMovement : MonoBehaviour
 
     private void StopAnimator()
     {
-        print("stop animator");
         playing = Animations.None;
         animator.speed = 0;
     }
