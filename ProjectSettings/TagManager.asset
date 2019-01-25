@@ -6,7 +6,7 @@ TagManager:
   tags:
   - environment
   - death
-  - finnish
+  - lock
   layers:
   - Default
   - TransparentFX
