@@ -9,6 +9,7 @@ public class BigKidMovement : MonoBehaviour
     [SerializeField] float horizontalModificator = 5;
     [SerializeField] float verticalModificator = 5;
     [SerializeField] int   blinkPause = 15;
+    [SerializeField] float xWhenStanding = -1.96f;
 
     enum Animations {Jump, Fall, Run, Blink, None};
     Animations playing;
@@ -78,7 +79,7 @@ public class BigKidMovement : MonoBehaviour
 
     private void LoadFirstLevel()
     {
-        SceneManager.LoadScene(0);
+        // SceneManager.LoadScene(0);
     }
 
     private void MovementOnInput()
@@ -104,26 +105,26 @@ public class BigKidMovement : MonoBehaviour
 
     private void Animate(float horizontal, bool isJumping)
     {
-        bool isFalling = transform.localPosition.y > -1.96 && CrossPlatformInputManager.GetButton("Jump") == false;
+        bool isFalling = transform.localPosition.y > xWhenStanding && CrossPlatformInputManager.GetButton("Jump") == false;
         bool isWalking = Mathf.Abs(horizontal) > Mathf.Epsilon && !isFalling;
         bool shouldBlink = Mathf.CeilToInt(Time.realtimeSinceStartup) % blinkPause == 0;
 
         if (isJumping)
         {
-            animator.Play("Run - Basic");
+            // animator.Play("Run - Basic");
             animator.speed = 1;
             playing = Animations.Jump;
         }
         else if (isFalling)
         {
-            animator.Play("Run - Basic");
+            // animator.Play("Run - Basic");
             animator.speed = 1;
             playing = Animations.Fall;
         }
         else if (isWalking)
         {
-            animator.Play("Run - Basic");
-            print("am i running?");
+            // animator.Play("Run - Basic");
+            //print("am i running?");
             animator.speed = 1;
             playing = Animations.Run;
         }
@@ -131,7 +132,7 @@ public class BigKidMovement : MonoBehaviour
         {
             if (playing != Animations.Blink)
             {
-                animator.Play("Stand - Basic");
+                // animator.Play("Stand - Basic");
                 animator.speed = 1;
                 playing = Animations.Blink;
                 Invoke("StopAnimator", 5f);
@@ -139,10 +140,10 @@ public class BigKidMovement : MonoBehaviour
         }
         else //stop immediately
         {
-            print("playing " + playing);
+            //print("playing " + playing);
             if (playing != Animations.Blink)
             {
-                animator.Play("Stand - Basic");
+                // animator.Play("Stand - Basic");
                 playing = Animations.None;
                 animator.speed = 0;
             }
