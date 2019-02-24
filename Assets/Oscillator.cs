@@ -11,6 +11,7 @@ public class Oscillator : MonoBehaviour
     // move character with platform
     private GameObject player = null;
     private Vector3 playerOffset;
+    private Vector3 offset;
 
     // todo remove from inspector later
     [Range(0,1)]
@@ -27,7 +28,7 @@ public class Oscillator : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other) {
         player = other.gameObject;
-        playerOffset = player.transform.localPosition - transform.position;
+        playerOffset = player.transform.position - transform.position;
         print ("update player offset: " + playerOffset);
     }
 
@@ -48,19 +49,17 @@ public class Oscillator : MonoBehaviour
         float rawSinWave = Mathf.Sin(cycles * tau);
         movementFactor = rawSinWave / 2f + 0.5f;
 
-        Vector3 offset = movementFactor * movementVector;
+        offset = movementFactor * movementVector;
         transform.position = startingPos + offset;
-
+        
         if (player != null) {
-            //print ("player offset: " + playerOffset);
-            player.transform.localPosition = transform.position + playerOffset;
+             player.transform.position = transform.position + playerOffset;
         }
     }
 
     private void LateUpdate() {
         // if (player != null) {
-        //     //print ("player offset: " + playerOffset);
-        //     player.transform.localPosition = transform.position + playerOffset;
+        //      player.transform.position = transform.position + playerOffset;
         // }
     }
 }

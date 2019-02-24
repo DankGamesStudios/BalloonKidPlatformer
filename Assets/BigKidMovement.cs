@@ -9,11 +9,15 @@ public class BigKidMovement : MonoBehaviour
     [SerializeField] float horizontalModificator = 5;
     [SerializeField] float verticalModificator = 5;
     [SerializeField] int   blinkPause = 15;
-    [SerializeField] float xWhenStanding = -1.96f;
+    [SerializeField] float yWhenStanding = -1.96f;
+    public GameObject Balloon;
 
     enum Animations {Jump, Fall, Run, Blink, None};
     Animations playing;
     bool playerLock = false;
+    [SerializeField] float balloonTime = 5f;
+    float startBalloonTime = 0f;
+    bool balloonAlive = false;
 
     Rigidbody2D rigidBody = null;
     SpriteRenderer kidRenderer = null;
@@ -21,6 +25,7 @@ public class BigKidMovement : MonoBehaviour
     GameObject winMessage = null;
 
     public bool finishLocked = false;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -36,9 +41,15 @@ public class BigKidMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (CrossPlatformInputManager.GetButton("Fire2"))
+        {
+            print("Reload!!!");
+            Invoke("LoadV2", 0.5f);
+        }
         if (!playerLock)
         {
             MovementOnInput();
+            BalloonActions();
         }
     }
 
@@ -64,10 +75,10 @@ public class BigKidMovement : MonoBehaviour
                     playerLock = true;
                     animator.Play("Stand - Basic");
                     animator.speed = 0;
-                    winMessage.transform.localPosition = new Vector3(
-                        winMessage.transform.localPosition.x,
+                    winMessage.transform.position = new Vector3(
+                        winMessage.transform.position.x,
                         0.27f,
-                        winMessage.transform.localPosition.z);
+                        winMessage.transform.position.z);
                     // how to print message on screen?
                     Invoke("Quit", 3f);
                 }
@@ -82,20 +93,57 @@ public class BigKidMovement : MonoBehaviour
         // SceneManager.LoadScene(0);
     }
 
+    private void LoadV2()
+    {
+        // basically reload
+        SceneManager.LoadScene(1);
+    }
+
+    private void BalloonActions() {
+        if (CrossPlatformInputManager.GetButton("Fire3")){
+            if (balloonAlive) {
+                print("ballon already alive, destroying");
+                DestroyBalloon();
+            }
+            startBalloonTime = Time.deltaTime;
+            balloonAlive = true;
+            print("create balloon " + startBalloonTime);
+            GameObject balloon = Instantiate(Balloon, transform);
+            balloon.transform.position += new Vector3(0.23f, 2.13f, 0f);
+            balloon.name = "Balloon";
+        }
+
+        if (startBalloonTime > 0 && Time.deltaTime > startBalloonTime + balloonTime)
+        {
+            print("destroy balloon");
+            DestroyBalloon();
+        }
+    }
+
+    private void DestroyBalloon() {
+        GameObject balloon = GameObject.Find("Balloon");
+        if (balloon != null) {
+            Destroy(balloon);
+            startBalloonTime = 0f;
+        }
+        balloonAlive = false;
+    }
+
     private void MovementOnInput()
     {
         float horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
         kidRenderer.flipX = horizontal < 0;
 
         float horizontalChange = horizontal * horizontalModificator * Time.deltaTime;
-        transform.localPosition = new Vector3(
-            transform.localPosition.x + horizontalChange,
-            transform.localPosition.y,
-            transform.localPosition.z);
+        transform.position = new Vector3(
+            transform.position.x + horizontalChange,
+            transform.position.y,
+            transform.position.z);
         bool isJumping = CrossPlatformInputManager.GetButton("Jump");
         if (isJumping)
         {
-            float jump = verticalModificator * Time.deltaTime;
+            float modificator = balloonAlive ? verticalModificator : 1f;
+            float jump = modificator * Time.deltaTime;
             rigidBody.freezeRotation = true;
             rigidBody.AddRelativeForce(Vector3.up * jump);
             rigidBody.freezeRotation = false;
@@ -105,7 +153,7 @@ public class BigKidMovement : MonoBehaviour
 
     private void Animate(float horizontal, bool isJumping)
     {
-        bool isFalling = transform.localPosition.y > xWhenStanding && CrossPlatformInputManager.GetButton("Jump") == false;
+        bool isFalling = transform.position.y > yWhenStanding && CrossPlatformInputManager.GetButton("Jump") == false;
         bool isWalking = Mathf.Abs(horizontal) > Mathf.Epsilon && !isFalling;
         bool shouldBlink = Mathf.CeilToInt(Time.realtimeSinceStartup) % blinkPause == 0;
 

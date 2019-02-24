@@ -12,6 +12,7 @@ public class BalloonMovement : MonoBehaviour
     [SerializeField] float balloonHelium = 1f;
 
     bool tiedToPlayer = true;
+    float yWhenStanding = -2.25f;
 
     Vector3 origin;
 
@@ -28,7 +29,7 @@ public class BalloonMovement : MonoBehaviour
         {
             case "unlock":
                 print("Finish unlocked");
-                //Destroy(collision.gameObject); //bye bye mushroom
+                Destroy(collision.gameObject); //bye bye mushroom
                 collision.gameObject.transform.localScale = new Vector3(0f, 0f, 0f);
                 transform.parent.gameObject.SendMessage("UnlockFinish");
                 break;
@@ -42,7 +43,7 @@ public class BalloonMovement : MonoBehaviour
         float horizontal = CrossPlatformInputManager.GetAxis("Horizontal");
         float horizontalChange = horizontal * horizontalModificator * Time.deltaTime;
         bool isFiring = CrossPlatformInputManager.GetButton("Fire1");
-        bool isFlying = transform.parent.localPosition.y > -3.2;
+        bool isFlying = transform.parent.position.y > yWhenStanding;
 
         if (isFiring)
         {
