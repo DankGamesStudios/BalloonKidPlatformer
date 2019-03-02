@@ -7,7 +7,9 @@ using UnityEngine.SceneManagement;
 public class BigKidMovement : MonoBehaviour
 {
     [SerializeField] float horizontalModificator = 5;
-    [SerializeField] float verticalModificator = 5;
+    [SerializeField] float balloonModificator = 5;
+    [SerializeField] float jumpModificator = 5;
+    [SerializeField] float gravity = 20f;
     [SerializeField] int   blinkPause = 15;
     [SerializeField] float yWhenStanding = -1.96f;
     public GameObject Balloon;
@@ -102,20 +104,21 @@ public class BigKidMovement : MonoBehaviour
     private void BalloonActions() {
         if (CrossPlatformInputManager.GetButton("Fire3")){
             if (balloonAlive) {
-                print("ballon already alive, destroying");
+                //print("ballon already alive, destroying");
                 DestroyBalloon();
             }
-            startBalloonTime = Time.deltaTime;
+            startBalloonTime = Time.realtimeSinceStartup;
             balloonAlive = true;
-            print("create balloon " + startBalloonTime);
+            //print("create balloon " + startBalloonTime);
+            //print("expect finnish at " + (startBalloonTime + balloonTime));
             GameObject balloon = Instantiate(Balloon, transform);
-            balloon.transform.position += new Vector3(0.23f, 2.13f, 0f);
+            balloon.transform.position += new Vector3(0f, 0f, 0f);
             balloon.name = "Balloon";
         }
 
-        if (startBalloonTime > 0 && Time.deltaTime > startBalloonTime + balloonTime)
+        if (startBalloonTime > 0 && Time.realtimeSinceStartup > startBalloonTime + balloonTime)
         {
-            print("destroy balloon");
+            //print("destroy balloon");
             DestroyBalloon();
         }
     }
@@ -135,19 +138,28 @@ public class BigKidMovement : MonoBehaviour
         kidRenderer.flipX = horizontal < 0;
 
         float horizontalChange = horizontal * horizontalModificator * Time.deltaTime;
-        transform.position = new Vector3(
-            transform.position.x + horizontalChange,
-            transform.position.y,
-            transform.position.z);
+        float verticalChange = 0; // not jumping now
         bool isJumping = CrossPlatformInputManager.GetButton("Jump");
         if (isJumping)
         {
-            float modificator = balloonAlive ? verticalModificator : 1f;
-            float jump = modificator * Time.deltaTime;
-            rigidBody.freezeRotation = true;
-            rigidBody.AddRelativeForce(Vector3.up * jump);
-            rigidBody.freezeRotation = false;
+            if (balloonAlive)
+            {
+                float jump = balloonModificator * Time.deltaTime;
+                rigidBody.freezeRotation = true;
+                rigidBody.AddRelativeForce(Vector3.up * jump);
+                rigidBody.freezeRotation = false;
+            }
+            else // jump with gravity
+            {
+                // muahahah math !!!
+                verticalChange = (jumpModificator - gravity * Time.deltaTime) * Time.deltaTime;
+            }
         }
+        transform.position = new Vector3(
+            transform.position.x + horizontalChange,
+            transform.position.y + verticalChange,
+            transform.position.z);
+        
         Animate(horizontal, isJumping);
     }
 

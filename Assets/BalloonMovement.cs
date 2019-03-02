@@ -47,7 +47,7 @@ public class BalloonMovement : MonoBehaviour
 
         if (isFiring)
         {
-            print("release the balloon");
+            //print("release the balloon");
             tiedToPlayer = false;
         }
         if (tiedToPlayer)
@@ -82,7 +82,7 @@ public class BalloonMovement : MonoBehaviour
             transform.localRotation = Quaternion.Euler(new Vector3(0f, 0f, 10f * Mathf.Sin(10 * Time.time)));
             if (transform.localPosition.y > 7f)
             {
-                print("balloon destroyed");
+                //print("balloon destroyed");
                 transform.localScale = new Vector3(0f, 0f, 0f); //poof
             }
         }

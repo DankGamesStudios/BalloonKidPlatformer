@@ -5,12 +5,13 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class Oscillator : MonoBehaviour
 {
-    [SerializeField] Vector3 movementVector = new Vector3(10f, 10f, 10f);
+    [SerializeField] Vector3 movementVector = new Vector3(10f, 0f, 0f);
     [SerializeField] float period = 2f;
     
     // move character with platform
     private GameObject player = null;
-    private Vector3 playerOffset;
+    // internet implementation
+    // private Vector3 playerOffset;
     private Vector3 offset;
 
     // todo remove from inspector later
@@ -18,6 +19,9 @@ public class Oscillator : MonoBehaviour
     float movementFactor; // 0 for not moved, 1 for fully moved
 
     Vector3 startingPos;
+    Vector3 oscillatorOffset;
+
+    bool doneThisFrame = true;
 
     // Start is called before the first frame update
     void Start()
@@ -28,8 +32,9 @@ public class Oscillator : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D other) {
         player = other.gameObject;
-        playerOffset = player.transform.position - transform.position;
-        print ("update player offset: " + playerOffset);
+        oscillatorOffset = transform.position - startingPos;
+        // internet implementation
+        // playerOffset = player.transform.position - transform.position;
     }
 
     private void OnTriggerExit2D(Collider2D other) {
@@ -51,15 +56,19 @@ public class Oscillator : MonoBehaviour
 
         offset = movementFactor * movementVector;
         transform.position = startingPos + offset;
-        
-        if (player != null) {
-             player.transform.position = transform.position + playerOffset;
-        }
+
+        doneThisFrame = false;
     }
 
     private void LateUpdate() {
+        // internet implementation
         // if (player != null) {
         //      player.transform.position = transform.position + playerOffset;
         // }
+        if (player != null && !doneThisFrame) {
+            //print("offset on trigger " + oscillatorOffset + ", offset now " + offset + ", player position" + player.transform.position);
+            player.transform.position += (offset - oscillatorOffset);
+            doneThisFrame = true;
+        }
     }
 }
