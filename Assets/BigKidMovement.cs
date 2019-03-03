@@ -98,7 +98,8 @@ public class BigKidMovement : MonoBehaviour
     private void LoadV2()
     {
         // basically reload
-        SceneManager.LoadScene(1);
+        Scene activeScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(activeScene.buildIndex);
     }
 
     private void BalloonActions() {

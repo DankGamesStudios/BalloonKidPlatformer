@@ -8,18 +8,17 @@ public class Oscillator : MonoBehaviour
     [SerializeField] Vector3 movementVector = new Vector3(10f, 0f, 0f);
     [SerializeField] float period = 2f;
     
-    // move character with platform
-    private GameObject player = null;
-    // internet implementation
-    // private Vector3 playerOffset;
-    private Vector3 offset;
 
     // todo remove from inspector later
     [Range(0,1)]
     float movementFactor; // 0 for not moved, 1 for fully moved
 
-    Vector3 startingPos;
-    Vector3 oscillatorOffset;
+    // move character with platform
+    private GameObject player = null;
+    private Vector3 startingPos;
+    private Vector3 previousOffset = new Vector3(0f, 0f, 0f);
+    private Vector3 playerPosition;
+    private Vector3 offset = new Vector3(0f, 0f, 0f);
 
     bool doneThisFrame = true;
 
@@ -30,11 +29,8 @@ public class Oscillator : MonoBehaviour
         player = null;
     }
 
-    private void OnTriggerStay2D(Collider2D other) {
+    private void OnTriggerEnter2D(Collider2D other) {
         player = other.gameObject;
-        oscillatorOffset = transform.position - startingPos;
-        // internet implementation
-        // playerOffset = player.transform.position - transform.position;
     }
 
     private void OnTriggerExit2D(Collider2D other) {
@@ -54,6 +50,7 @@ public class Oscillator : MonoBehaviour
         float rawSinWave = Mathf.Sin(cycles * tau);
         movementFactor = rawSinWave / 2f + 0.5f;
 
+        previousOffset = offset; // set previous offset
         offset = movementFactor * movementVector;
         transform.position = startingPos + offset;
 
@@ -61,14 +58,16 @@ public class Oscillator : MonoBehaviour
     }
 
     private void LateUpdate() {
-        // internet implementation
-        // if (player != null) {
-        //      player.transform.position = transform.position + playerOffset;
-        // }
-        if (player != null && !doneThisFrame) {
-            //print("offset on trigger " + oscillatorOffset + ", offset now " + offset + ", player position" + player.transform.position);
-            player.transform.position += (offset - oscillatorOffset);
-            doneThisFrame = true;
+        if (player != null)
+        {
+            if (!doneThisFrame)
+            {
+                doneThisFrame = true;
+                playerPosition = player.transform.position;
+            }
+            // while there is a player on platform, translate its position with
+            // the difference between updates of the oscillator
+            player.transform.position = playerPosition + (offset - previousOffset);
         }
     }
 }
