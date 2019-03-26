@@ -5,7 +5,8 @@ using UnityEngine;
 
 public class MovementBehaviourScript : MonoBehaviour
 {
-    public float maxSpeed = 10.0f;
+    // maxSpeed pare destul de rapid la 1x
+    [SerializeField] public float maxSpeed = 1.0f;
     bool facingRight = true;
 
     Animator anim;
@@ -14,8 +15,8 @@ public class MovementBehaviourScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        anim = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody2D>();
+        anim = GetComponentInChildren<Animator>();
+        rb = GetComponentInChildren<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -23,9 +24,22 @@ public class MovementBehaviourScript : MonoBehaviour
     {
         float move = Input.GetAxis("Horizontal");
         anim.SetFloat("Speed", Mathf.Abs(move));
-        rb.velocity = new Vector2(rb.velocity.x + move * maxSpeed, rb.velocity.y);
-
-
+        AnimatorStateInfo playingAnimation = anim.GetCurrentAnimatorStateInfo(0);
+        // nush ce face velocity aici, i am sorry
+        // rb.velocity = new Vector2(rb.velocity.x + move * maxSpeed, rb.velocity.y);
+        // pot sa astept dupa animatie sa ma misc
+        if (playingAnimation.IsName("walking")) // like ffs what logic in naming methods is this???
+        {
+            transform.position = new Vector3(transform.position.x + move * maxSpeed, transform.position.y, transform.position.z);
+        }
+        // sau pot sa testez move si sa dau play la animatia de walking
+        // (dar nush daca trece prin tranzitia definita intre idle si walking)
+        // if (!playingAnimation.IsName("walking") && Mathf.Abs(move) > 0.01 )
+        // {
+        //     anim.Play("walking", 0, 0);
+        // }
+        // transform.position = new Vector3(transform.position.x + move * maxSpeed, transform.position.y, transform.position.z); 
+ 
         if (move > 0 && !facingRight)
         {
             FlipFacing();
