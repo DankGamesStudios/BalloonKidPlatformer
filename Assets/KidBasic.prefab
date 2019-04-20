@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6331838130568046714}
   - component: {fileID: 6331838130568046717}
   m_Layer: 0
-  m_Name: KidBasic 1
+  m_Name: KidBasic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -162,7 +162,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   horizontalModificator: 5
-  verticalModificator: 600
+  balloonModificator: 600
+  jumpModificator: 5
+  gravity: 20
   blinkPause: 15
   yWhenStanding: -2.25
+  Balloon: {fileID: 8043749349606150759, guid: f6db9221b83201040bfd59422be13c47, type: 3}
+  balloonTime: 5
   finishLocked: 0
