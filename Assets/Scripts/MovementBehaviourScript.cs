@@ -25,7 +25,7 @@ public class MovementBehaviourScript : MonoBehaviour
     void Start()
     {
         anim = GetComponentInChildren<Animator>();
-        rb = GetComponentInChildren<Rigidbody2D>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     private void BalloonActions()
@@ -110,15 +110,14 @@ public class MovementBehaviourScript : MonoBehaviour
         float verticalChange = 0f; // not jumping now
         if (balloonAlive)
         {
-            float jump = balloonModificator * Time.deltaTime;
             rb.freezeRotation = true;
-            rb.AddRelativeForce(Vector3.up * jump);
+            rb.AddRelativeForce(Vector3.up * balloonModificator);
             rb.freezeRotation = false;
         }
         else // jump with gravity
         {
             // muahahah math !!!
-            verticalChange = (jumpModificator - gravity * Time.deltaTime) * Time.deltaTime;
+            verticalChange = (jumpModificator - gravity);
         }
         return verticalChange;
     }

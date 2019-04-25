@@ -411,6 +411,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1688407763}
   - component: {fileID: 1688407762}
+  - component: {fileID: 1688407764}
   m_Layer: 0
   m_Name: character root
   m_TagString: Untagged
@@ -433,7 +434,7 @@ MonoBehaviour:
   maxSpeed: 1
   balloonTime: 5
   balloonModificator: 600
-  jumpModificator: 5
+  jumpModificator: 20.3
   gravity: 20
   Balloon: {fileID: 8043749349606150759, guid: a338f427f8d455547a80b86861882468, type: 3}
 --- !u!4 &1688407763
@@ -451,6 +452,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &1688407764
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1688407761}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 20
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!4 &1934828539 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1482041110080895829, guid: 69eb7ac9f7a3c63458901234e76e879d,
@@ -736,11 +758,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1482041110080895826, guid: 69eb7ac9f7a3c63458901234e76e879d,
-        type: 3}
-      propertyPath: m_Simulated
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 69eb7ac9f7a3c63458901234e76e879d, type: 3}
